@@ -64,5 +64,3 @@ file_1.close()
 file_2.close()
 file_3.close()
 file_4.close()
-
-print(str(list_count))
