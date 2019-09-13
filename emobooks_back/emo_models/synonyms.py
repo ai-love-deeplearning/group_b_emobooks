@@ -2,7 +2,7 @@ from gensim.models import word2vec
 import pprint
 
 model = word2vec.Word2Vec.load("emo_2.model")
-results = model.wv.most_similar(positive=['体験'])
+results = model.wv.most_similar(positive=['猫'])
 for result in results:
     print(result)
 
