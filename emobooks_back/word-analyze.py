@@ -70,12 +70,23 @@ def main():
 
     not_file.close()
 
-    analyzed_array = [[0 for i in range(4)] for i in range(101)]
+    score_rength = [[0 for i in range(4)] for i in range(3)]
+    for i in score_happy:
+        score_rength[0][0] += i
+    for i in score_angry:
+        score_rength[1][0] += i
+    for i in score_sad:
+        score_rength[2][0] += i
+    for i in score_fun:
+        score_rength[3][0] += i
 
-    i = 1
     j = 0
     while j < 4:
-        
+        score_rength[j][1] = score_rength[j][0] / 100
+        score_rength[j][2] = score_rength[j][0] % 100
+        j += 1
+
+    analyzed_array = [[0 for i in range(4)] for i in range(101)]
 
 
 main()
