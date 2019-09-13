@@ -70,5 +70,12 @@ def main():
 
     not_file.close()
 
+    analyzed_array = [[0 for i in range(4)] for i in range(101)]
+
+    i = 1
+    j = 0
+    while j < 4:
+        
+
 
 main()
