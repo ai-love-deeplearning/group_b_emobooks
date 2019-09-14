@@ -82,10 +82,11 @@ def main():
 
     j = 0
     while j < 4:
-        score_rength[j][1] = score_rength[j][0] / 100
-        score_rength[j][2] = score_rength[j][0] % 100
+        score_rength[j][1] = int(score_rength[j][0] / 99)
+        score_rength[j][2] = score_rength[j][0] - score_rength[j][1] * 99
         j += 1
 
+    
     analyzed_array = [[0 for i in range(4)] for i in range(101)]
 
 
