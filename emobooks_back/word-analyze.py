@@ -25,16 +25,17 @@ def score_analyze(emo_dict, score_list, list_file, list_line, not_file):
 def sum_value(score_analyze, score_rength, score_value):
     j = 0
     k = 1
+    rength_check = 1
     for i in score_value:
-        if j == score_rength:
-            score_analyze[k] = score_analyze[k] / score_rength
+        if j == score_rength[rength_check]:
+            score_analyze[k] = score_analyze[k] / score_rength[rength_check]
             j = 0
             k += 1
         else:
             score_analyze[k] += i
             j += 1
         if k == 100:
-            return k - 1
+            score_analyze[k] += i
 
 
 def main():
@@ -105,14 +106,7 @@ def main():
     i = 0
     while i < 2:
         if i == 1:
-            sum_value(analyzed_array[0], score_rength[0][1], score_happy)
-            sum_value(analyzed_array[1], score_rength[1][1], score_angry)
-            sum_value(analyzed_array[2], score_rength[2][1], score_sad)
-            sum_value(analyzed_array[3], score_rength[3][1], score_fun)
-            i = 99
-        elif i == 100:
-            sum_value_last(analyzed_array[0], score_rength[0][2], score_happy)
-            sum_value_last(analyzed_array[1], score_rength[1][2], score_angry)
-            sum_value_last(analyzed_array[2], score_rength[2][2], score_sad)
-            sum_value_last(analyzed_array[3], score_rength[3][2], score_fun)
-main()
+            sum_value(analyzed_array[0], score_rength[0][i], score_happy)
+            sum_value(analyzed_array[1], score_rength[1][i], score_angry)
+            sum_value(analyzed_array[2], score_rength[2][i], score_sad)
+            sum_value(analyzed_array[3], score_rength[3][i], score_fun)
