@@ -122,4 +122,5 @@ def main():
 
     create_emotion_file(analyzed_array)
 
+
 main()
