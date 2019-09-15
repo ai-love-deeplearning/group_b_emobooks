@@ -122,12 +122,4 @@ def main():
 
     create_emotion_file(analyzed_array)
 
-<<<<<<< HEAD
-file_1.close()
-file_2.close()
-file_3.close()
-file_4.close()
-=======
-
 main()
->>>>>>> word-analyze_edit
