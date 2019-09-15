@@ -23,19 +23,33 @@ def score_analyze(emo_dict, score_list, list_file, list_line, not_file):
 
 
 def sum_value(score_analyze, score_rength, score_value):
-    j = 0
-    k = 1
-    rength_check = 1
-    for i in score_value:
-        if j == score_rength[rength_check]:
-            score_analyze[k] = score_analyze[k] / score_rength[rength_check]
-            j = 0
-            k += 1
-        else:
-            score_analyze[k] += i
-            j += 1
-        if k == 100:
-            score_analyze[k] += i
+    analyze = 1
+    value = 0
+    rength = 1
+    while analyze < 101:
+        count = 0
+        while count < score_rength[rength]:
+            score_analyze[analyze] += score_value[value]
+            count += 1
+            value += 1
+        score_analyze[analyze] = score_analyze[analyze] / score_rength[rength]
+        analyze += 1
+        if analyze == 100:
+            rength = 2
+
+
+def create_emotion_file(score_analyze):
+    with open('emo_data.txt', 'a') as f:
+        emo = 0
+        while emo < 4:
+            per = 0
+            while per < 101:
+                f.write(score_analyze[emo][per])
+                if per < 100:
+                    f.write(',')
+                per += 1
+            f.write('\n')
+            emo += 1
 
 
 def main():
@@ -103,10 +117,12 @@ def main():
         j += 1
 
     analyzed_array = [[0 for i in range(4)] for i in range(101)]
-    i = 0
-    while i < 2:
-        if i == 1:
-            sum_value(analyzed_array[0], score_rength[0][i], score_happy)
-            sum_value(analyzed_array[1], score_rength[1][i], score_angry)
-            sum_value(analyzed_array[2], score_rength[2][i], score_sad)
-            sum_value(analyzed_array[3], score_rength[3][i], score_fun)
+    sum_value(analyzed_array[0], score_rength[0], score_happy)
+    sum_value(analyzed_array[1], score_rength[1], score_angry)
+    sum_value(analyzed_array[2], score_rength[2], score_sad)
+    sum_value(analyzed_array[3], score_rength[3], score_fun)
+
+    create_emotion_file(analyzed_array)
+
+
+main()
