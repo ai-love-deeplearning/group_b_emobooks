@@ -6,18 +6,18 @@ def set_dictionary(emo_dict, dict_file, dict_line):
         dict_line = dict_file.readline().rstrip('\n')
 
 
-def score_analyze(emo_dict, score_list, list_file, list_line, not_file):
+def score_analyze(emo_dict, score_list, f, not_file):
     i = 1
     count = 0
-    while list_line:
-        if list_line in emo_dict.keys():
-            score_list.append(emo_dict[list_line])
+    for line in f:
+        Line = line.rstrip('\n')
+        if Line in emo_dict.keys():
+            score_list.append(emo_dict[Line])
             count += 1
         else:
-            print(list_line + 'not in vocabrary')
-            not_file.write(str(i) + ',' + list_line + '\n')
+            print(Line + 'not in vocabrary')
+            not_file.write(str(i) + ',' + Line + '\n')
             i += 1
-        list_line = list_file.readline().rstrip('\n')
     print(str(count) + ' word was analyzed. but ' +
           str(i - 1) + ' word is not found in vocabrary.\n')
 
@@ -44,19 +44,20 @@ def create_emotion_file(score_analyze):
         while emo < 4:
             per = 0
             while per < 101:
-                f.write(score_analyze[emo][per])
+                f.write(str(score_analyze[emo][per]))
                 if per < 100:
                     f.write(',')
                 per += 1
-            f.write('\n')
+            if emo < 3:
+                f.write('\n')
             emo += 1
 
 
 def main():
-    file_1 = open('dic_1.txt', 'r')
-    file_2 = open('dic_2.txt', 'r')
-    file_3 = open('dic_3.txt', 'r')
-    file_4 = open('dic_4.txt', 'r')
+    file_1 = open('dic_happy.txt', 'r')
+    file_2 = open('dic_angry.txt', 'r')
+    file_3 = open('dic_sad.txt', 'r')
+    file_4 = open('dic_fun.txt', 'r')
 
     line_1 = file_1.readline().rstrip('\n')
     line_2 = file_2.readline().rstrip('\n')
@@ -78,9 +79,6 @@ def main():
     score_sad = []
     score_fun = []
 
-    list_file = open('pre-text.txt', 'r')
-    list_line = list_file.readline().rstrip('\n')
-
     not_file = open('not_vocab_word.txt', 'a')
 
     set_dictionary(happy, file_1, line_1)
@@ -88,10 +86,14 @@ def main():
     set_dictionary(sad, file_3, line_3)
     set_dictionary(fun, file_4, line_4)
 
-    score_analyze(happy, score_happy, list_file, list_line, not_file)
-    score_analyze(angry, score_angry, list_file, list_line, not_file)
-    score_analyze(sad, score_sad, list_file, list_line, not_file)
-    score_analyze(fun, score_fun, list_file, list_line, not_file)
+    with open('pre-text.txt', 'r') as f:
+        score_analyze(happy, score_happy, f, not_file)
+    with open('pre-text.txt', 'r') as f:
+        score_analyze(angry, score_angry, f, not_file)
+    with open('pre-text.txt', 'r') as f:
+        score_analyze(sad, score_sad, f, not_file)
+    with open('pre-text.txt', 'r') as f:
+        score_analyze(fun, score_fun, f, not_file)
 
     file_1.close()
     file_2.close()
@@ -100,15 +102,11 @@ def main():
 
     not_file.close()
 
-    score_rength = [[0 for i in range(4)] for i in range(3)]
-    for i in score_happy:
-        score_rength[0][0] += i
-    for i in score_angry:
-        score_rength[1][0] += i
-    for i in score_sad:
-        score_rength[2][0] += i
-    for i in score_fun:
-        score_rength[3][0] += i
+    score_rength = [[0 for i in range(3)] for i in range(4)]
+    score_rength[0][0] = len(score_happy)
+    score_rength[1][0] = len(score_angry)
+    score_rength[2][0] = len(score_sad)
+    score_rength[3][0] = len(score_fun)
 
     j = 0
     while j < 4:
@@ -116,7 +114,7 @@ def main():
         score_rength[j][2] = score_rength[j][0] - score_rength[j][1] * 99
         j += 1
 
-    analyzed_array = [[0 for i in range(4)] for i in range(101)]
+    analyzed_array = [[0 for i in range(101)] for i in range(4)]
     sum_value(analyzed_array[0], score_rength[0], score_happy)
     sum_value(analyzed_array[1], score_rength[1], score_angry)
     sum_value(analyzed_array[2], score_rength[2], score_sad)
