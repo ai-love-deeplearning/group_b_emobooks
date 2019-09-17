@@ -1,6 +1,9 @@
 import json
-import collections as cl
 
 
 def main():
-    array = [[0, 1], [2, 3], [4, 5]]
+    with open('sample_test.json') as f:
+        df = json.load(f)
+
+    print(df['n7105co'])
+main()
