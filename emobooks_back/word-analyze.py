@@ -3,8 +3,7 @@ import json
 
 
 def edit_text(text):
-    text = text.replace('\\n', '\n')
-    text = text.strip()
+    text = text.replace('\n', '').replace(' ', '').replace('　', '')
     mecab = MeCab.Tagger("-Owakati")
     text = mecab.parse(text)
     text = text.replace('「', '').replace(
@@ -21,17 +20,15 @@ def set_dictionary(emo_dict, dict_file, dict_line):
         dict_line = dict_file.readline().rstrip('\n')
 
 
-def score_analyze(emo_dict, score_list, f, not_file):
+def score_analyze(emo_dict, score_list, text_lines):
     i = 1
     count = 0
-    for line in f:
-        Line = line.rstrip('\n')
-        if Line in emo_dict.keys():
-            score_list.append(emo_dict[Line])
+    for line in text_lines:
+        if line in emo_dict.keys():
+            score_list.append(emo_dict[line])
             count += 1
         else:
-            print(Line + 'not in vocabrary')
-            not_file.write(str(i) + ',' + Line + '\n')
+            print(line + 'not in vocabrary')
             i += 1
     print(str(count) + ' word was analyzed. but ' +
           str(i - 1) + ' word is not found in vocabrary.\n')
@@ -71,15 +68,15 @@ def create_emotion_file(score_analyze):
 def text_edit_main(text):
     text = edit_text(text)
     text_lines = text.split('\n')
+    memory_list = []
     for i in text_lines:
-        memory_list = []
-        if i != '\n':
+        if i != '':
             memory_list.append(i)
     for i in memory_list:
         text += i
         text += '\n'
     text.rstrip('\n')
-    return text
+    return memory_list
 
 
 def create_emo_data_main(text):
@@ -93,11 +90,6 @@ def create_emo_data_main(text):
     line_3 = file_3.readline().rstrip('\n')
     line_4 = file_4.readline().rstrip('\n')
 
-    list_count = 0
-    text_lines = text.split('\n')
-    for i in text_lines:
-        list_count += 1
-
     happy = {}
     angry = {}
     sad = {}
@@ -108,28 +100,20 @@ def create_emo_data_main(text):
     score_sad = []
     score_fun = []
 
-    not_file = open('not_vocab_word.txt', 'a')
-
     set_dictionary(happy, file_1, line_1)
     set_dictionary(angry, file_2, line_2)
     set_dictionary(sad, file_3, line_3)
     set_dictionary(fun, file_4, line_4)
 
-    with open('pre-text.txt', 'r') as f:
-        score_analyze(happy, score_happy, f, not_file)
-    with open('pre-text.txt', 'r') as f:
-        score_analyze(angry, score_angry, f, not_file)
-    with open('pre-text.txt', 'r') as f:
-        score_analyze(sad, score_sad, f, not_file)
-    with open('pre-text.txt', 'r') as f:
-        score_analyze(fun, score_fun, f, not_file)
+    score_analyze(happy, score_happy, text)
+    score_analyze(angry, score_angry, text)
+    score_analyze(sad, score_sad, text)
+    score_analyze(fun, score_fun, text)
 
     file_1.close()
     file_2.close()
     file_3.close()
     file_4.close()
-
-    not_file.close()
 
     score_rength = [[0 for i in range(3)] for i in range(4)]
     score_rength[0][0] = len(score_happy)
@@ -148,8 +132,7 @@ def create_emo_data_main(text):
     sum_value(analyzed_array[1], score_rength[1], score_angry)
     sum_value(analyzed_array[2], score_rength[2], score_sad)
     sum_value(analyzed_array[3], score_rength[3], score_fun)
-
-    create_emotion_file(analyzed_array)
+    return analyzed_array
 
 
 def main():
@@ -158,13 +141,26 @@ def main():
         json_f = json.load(f)
     for i in json_f:
         ncode.append(i)
+
     text = []
     for i in ncode:
-        text.append(json_f[i]['text'])
+        text.append(json_f[i])
+    j = 0
     for i in text:
-        i = text_edit_main(i)
+        text[j] = text_edit_main(i)
+        j += 0
+    j = 0
     for i in text:
-        create_emo_data_main(i)
+        text[j] = create_emo_data_main(i)
+        j += 0
+
+    j = 0
+    for i in ncode:
+        json_f[i] = text[j]
+        j += 1
+
+    with open('sample_test.json', 'w') as f:
+        json.dump(json_f, f, indent=4)
 
 
 main()
