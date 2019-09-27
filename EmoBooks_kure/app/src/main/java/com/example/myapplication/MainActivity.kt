@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(), ViewHolder.ItemClickListener {
 
         }
     }
-    private fun makeList() : List<ItemData> {
+    private fun makeList() : List<ItemData> {//
         var list = mutableListOf<ItemData>()
         for ( i in 1..20){
             var dat = ItemData().also {
