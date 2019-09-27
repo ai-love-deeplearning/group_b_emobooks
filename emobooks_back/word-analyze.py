@@ -137,7 +137,7 @@ def create_emo_data_main(text):
 
 def main():
     ncode = []
-    with open('sample_test.json', 'r') as f:
+    with open('sample_test.json', 'r') as f:  #
         json_f = json.load(f)
     for i in json_f:
         ncode.append(i)
