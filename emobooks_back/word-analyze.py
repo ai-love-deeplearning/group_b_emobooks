@@ -137,7 +137,7 @@ def create_emo_data_main(text):
 
 def main():
     ncode = []
-    with open('sample_test.json', 'r') as f:  #
+    with open('sample_test.json', 'r') as f:  # ここに自分のjsonファイルを指定
         json_f = json.load(f)
     for i in json_f:
         ncode.append(i)
@@ -159,7 +159,7 @@ def main():
         json_f[i] = text[j]
         j += 1
 
-    with open('sample_test.json', 'w') as f:
+    with open('sample_test.json', 'w') as f:  # ここに自分のjsonファイルを指定
         json.dump(json_f, f, indent=4)
 
 
