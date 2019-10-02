@@ -5,8 +5,8 @@ import pprint
 import codecs
 
 # baseになるjsonでgzipに圧縮した形式のURL
-# 今は各20個ずつ数は調整可
-BASE_URL = "http://api.syosetu.com/novelapi/api/?out=json&gzip=5"
+# 今は各100個ずつ数は調整可
+BASE_URL = "http://api.syosetu.com/novelapi/api/?lim=100&out=json&gzip=5&of=t-n-w-s-bg-g-ga-i-ka-nu"
 
 termSerecUrl = ['&order=hyoka', '&order=dailypoint', '&order=weeklypoint',
                 '&order=monthlypoint', '&order=quarterpoint', '&order=yearlypoint']
