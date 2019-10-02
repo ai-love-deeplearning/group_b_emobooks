@@ -3,19 +3,19 @@ package com.example.emo_graph_prototype
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Button
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_search.*
 
-class MainActivity : AppCompatActivity() {
+class SearchActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_search)
 
-        button.setOnClickListener {
-            val intent = Intent(this, SearchActivity::class.java)
+        button1.setOnClickListener {
+            val intent = Intent(this, ResultprotoActivity::class.java)
             startActivity(intent)
         }
+
     }
 }
-
