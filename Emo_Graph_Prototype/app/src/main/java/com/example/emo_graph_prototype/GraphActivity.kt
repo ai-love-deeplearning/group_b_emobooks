@@ -14,7 +14,7 @@ import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
 import com.github.mikephil.charting.highlight.Highlight
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener
-import kotlinx.android.synthetic.main.activity_emo__graph_activity.*
+import kotlinx.android.synthetic.main.activity_graph.*
 
 
 class GraphActivity : AppCompatActivity(), OnChartValueSelectedListener {
@@ -24,7 +24,7 @@ class GraphActivity : AppCompatActivity(), OnChartValueSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_emo__graph_activity)
+        setContentView(R.layout.activity_graph)
 
         setupLineChart()
         lineChart.data = lineDataWithCount(chartDateCount, 100f)
