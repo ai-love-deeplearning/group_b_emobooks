@@ -34,22 +34,6 @@ def score_analyze(emo_dict, score_list, text_lines):
           str(i - 1) + ' word is not found in vocabrary.\n')
 
 
-def sum_value(score_analyze, score_rength, score_value):
-    analyze = 1
-    value = 0
-    rength = 1
-    while analyze < 101:
-        count = 0
-        while count < score_rength[rength]:
-            score_analyze[analyze] += score_value[value]
-            count += 1
-            value += 1
-        score_analyze[analyze] = score_analyze[analyze] / score_rength[rength]
-        analyze += 1
-        if analyze == 100:
-            rength = 2
-
-
 def create_emotion_file(score_analyze):
     with open('emo_data.txt', 'a') as f:
         emo = 0
@@ -63,6 +47,10 @@ def create_emotion_file(score_analyze):
             if emo < 3:
                 f.write('\n')
             emo += 1
+
+
+def add_array(analyzed_array, score_emo):
+    i = 0
 
 
 def text_edit_main(text):
@@ -127,40 +115,23 @@ def create_emo_data_main(text):
         score_rength[j][2] = score_rength[j][0] - score_rength[j][1] * 99
         j += 1
 
-    analyzed_array = [[0 for i in range(101)] for i in range(4)]
-    sum_value(analyzed_array[0], score_rength[0], score_happy)
-    sum_value(analyzed_array[1], score_rength[1], score_angry)
-    sum_value(analyzed_array[2], score_rength[2], score_sad)
-    sum_value(analyzed_array[3], score_rength[3], score_fun)
+    analyzed_array = [[0 for i in range(len(text) + 1)] for i in range(5)]
+    percentage = 100 / len(text)
+    total_per = 0
+    for per in analyzed_array[0]:
+        per = total_per
+        total_per += percentage
+    add_array(analyzed_array, score_happy)
     return analyzed_array
 
 
 def main():
-    ncode = []
-    with open('sample_test.json', 'r') as f:  # ここに自分のjsonファイルを指定
-        json_f = json.load(f)
-    for i in json_f:
-        ncode.append(i)
+    with open('data.txt', 'r') as f:
+        text = f.read()
 
-    text = []
-    for i in ncode:
-        text.append(json_f[i])
-    j = 0
-    for i in text:
-        text[j] = text_edit_main(i)
-        j += 0
-    j = 0
-    for i in text:
-        text[j] = create_emo_data_main(i)
-        j += 0
-
-    j = 0
-    for i in ncode:
-        json_f[i] = text[j]
-        j += 1
-
-    with open('sample_test.json', 'w') as f:  # ここに自分のjsonファイルを指定
-        json.dump(json_f, f, indent=4)
+    text = text_edit_main(text)
+    print((100 / len(text)) * len(text))
+    #data = create_emo_data_main(text)
 
 
 main()
