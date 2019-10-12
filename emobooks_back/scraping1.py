@@ -44,7 +44,7 @@ def main():
     #     ,
     #    "https://ncode.syosetu.com/n7251fq/" # 俺の前世の知識で底辺職テイマーが上級職になってしまいそうな件について
 
-        "https://ncode.syosetu.com/n1518fs/" # ちょいよみ！
+        "https://ncode.syosetu.com/N6316BN/" # ちょいよみ！
                ]
     # -------------------------------------
     # 各作品について処理

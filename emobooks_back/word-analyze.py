@@ -1,5 +1,8 @@
 import MeCab
 import json
+import numpy as np
+from matplotlib import pyplot as plt
+import warnings
 
 
 def edit_text(text):
@@ -12,17 +15,20 @@ def edit_text(text):
     return text
 
 
-def set_dictionary(emo_dict, dict_file, dict_line):
-    while dict_line:
-        item = dict_line.split(', ')[0]
-        score = dict_line.split(', ')[1]
-        emo_dict[item] = float(score)
-        dict_line = dict_file.readline().rstrip('\n')
+def set_dictionary(dict_file):
+    emo_dict = {}
+    with open(dict_file, 'r') as f:
+        for data in f:
+            item = data.split(', ')[0]
+            score = data.split(', ')[1]
+            emo_dict[item] = float(score)
+    return emo_dict
 
 
-def score_analyze(emo_dict, score_list, text_lines):
+def score_analyze(emo_dict, text_lines):
     i = 1
     count = 0
+    score_list = []
     for line in text_lines:
         if line in emo_dict.keys():
             score_list.append(emo_dict[line])
@@ -32,6 +38,7 @@ def score_analyze(emo_dict, score_list, text_lines):
             i += 1
     print(str(count) + ' word was analyzed. but ' +
           str(i - 1) + ' word is not found in vocabrary.\n')
+    return score_list
 
 
 def create_emotion_file(score_analyze):
@@ -49,8 +56,22 @@ def create_emotion_file(score_analyze):
             emo += 1
 
 
-def add_array(analyzed_array, score_emo):
-    i = 0
+def add_array(score_emo, percentage, last):
+    cnt = 0
+    data = []
+    total = 0
+    flg = 1
+    position = percentage
+    while flg < 11:
+        while cnt < position:
+            total += score_emo[cnt]
+            cnt += 1
+        data.append(total)
+        position += percentage
+        flg += 1
+        total = 0
+
+    return data
 
 
 def text_edit_main(text):
@@ -68,46 +89,26 @@ def text_edit_main(text):
 
 
 def create_emo_data_main(text):
-    file_1 = open('dic_happy.txt', 'r')
-    file_2 = open('dic_angry.txt', 'r')
-    file_3 = open('dic_sad.txt', 'r')
-    file_4 = open('dic_fun.txt', 'r')
+    file = []
+    file.append('dic_happy.txt')
+    file.append('dic_angry.txt')
+    file.append('dic_sad.txt')
+    file.append('dic_fun.txt')
 
-    line_1 = file_1.readline().rstrip('\n')
-    line_2 = file_2.readline().rstrip('\n')
-    line_3 = file_3.readline().rstrip('\n')
-    line_4 = file_4.readline().rstrip('\n')
+    emo_dict_list = []
+    score = []
 
-    happy = {}
-    angry = {}
-    sad = {}
-    fun = {}
+    for i in file:
+        emo_dict_list.append(set_dictionary(i))
 
-    score_happy = []
-    score_angry = []
-    score_sad = []
-    score_fun = []
-
-    set_dictionary(happy, file_1, line_1)
-    set_dictionary(angry, file_2, line_2)
-    set_dictionary(sad, file_3, line_3)
-    set_dictionary(fun, file_4, line_4)
-
-    score_analyze(happy, score_happy, text)
-    score_analyze(angry, score_angry, text)
-    score_analyze(sad, score_sad, text)
-    score_analyze(fun, score_fun, text)
-
-    file_1.close()
-    file_2.close()
-    file_3.close()
-    file_4.close()
+    for dictionary in emo_dict_list:
+        score.append(score_analyze(dictionary, text))
 
     score_rength = [[0 for i in range(3)] for i in range(4)]
-    score_rength[0][0] = len(score_happy)
-    score_rength[1][0] = len(score_angry)
-    score_rength[2][0] = len(score_sad)
-    score_rength[3][0] = len(score_fun)
+    score_rength[0][0] = len(score[0])
+    score_rength[1][0] = len(score[1])
+    score_rength[2][0] = len(score[2])
+    score_rength[3][0] = len(score[3])
 
     j = 0
     while j < 4:
@@ -115,13 +116,25 @@ def create_emo_data_main(text):
         score_rength[j][2] = score_rength[j][0] - score_rength[j][1] * 99
         j += 1
 
-    analyzed_array = [[0 for i in range(len(text) + 1)] for i in range(5)]
-    percentage = 100 / len(text)
-    total_per = 0
-    for per in analyzed_array[0]:
-        per = total_per
-        total_per += percentage
-    add_array(analyzed_array, score_happy)
+    analyzed_array = []
+    percentage = int(len(score[0]) / 100)
+    last = 100 - percentage * 99
+
+    total_per = 10
+
+    per_list = []
+    per_list.append(total_per)
+    for per in range(9):
+        total_per += 10
+        per_list.append(total_per)
+
+    analyzed_array.append(per_list)
+
+    analyzed_array.append(add_array(score[0], percentage, last))
+    analyzed_array.append(add_array(score[1], percentage, last))
+    analyzed_array.append(add_array(score[2], percentage, last))
+    analyzed_array.append(add_array(score[3], percentage, last))
+
     return analyzed_array
 
 
@@ -130,8 +143,15 @@ def main():
         text = f.read()
 
     text = text_edit_main(text)
-    print((100 / len(text)) * len(text))
-    #data = create_emo_data_main(text)
+    data = create_emo_data_main(text)
+    print(data)
+
+    plt.plot(data[0], data[1], 'o-', label='happy')
+    plt.plot(data[0], data[2], 'o-', label='angry')
+    plt.plot(data[0], data[3], 'o-', label='sad')
+    plt.plot(data[0], data[4], 'o-', label='fun')
+    plt.legend(loc='best')
+    plt.show()
 
 
 main()
