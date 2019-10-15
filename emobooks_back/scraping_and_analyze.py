@@ -5,6 +5,7 @@ import time
 import json
 import MeCab
 
+
 def edit_text(text):
     text = text.replace('\n', '').replace(' ', '').replace('　', '')
     mecab = MeCab.Tagger("-Owakati")
@@ -45,7 +46,6 @@ def score_analyze(emo_dict, text_lines):
             score_list.append(emo_dict[word])
             count += 1
         else:
-            print(word + 'not in vocabrary')
             vocab_judge_and_list(word)
             i += 1
     print(str(count) + ' word was analyzed. but ' +
@@ -163,42 +163,53 @@ def getBaseUlr(jsonfile):
     with open(jsonfile, 'r', encoding="utf-8") as f:
         jsonData = json.load(f)
 
-        ncode = []
-        baseUlr = []
-        Ulr = []
-        for nobeldata in jsonData:
-            ncode.append(nobeldata['ncode'])
+    ncode = []
+    baseUlr = []
+    Ulr = []
+    for nobeldata in jsonData:
+        ncode.append(nobeldata['ncode'])
 
-        print(ncode)
-        for i in ncode:
-            emotion_data_list = []
-            # 作品本文ページのURL
-            Ulr = 'https://ncode.syosetu.com/' + "{}/".format(i)
-            baseUlr.append(Ulr)
-            res = urlopen(Ulr)
-            soup = BeautifulSoup(res, "html.parser")
-            num_parts = len(soup.find_all(class_='subtitle'))
-            textFileName = i + '.txt'
+    print(ncode)
+    cnt = 0
+    for i in ncode:
+        emotion_data_list = []
+        # 作品本文ページのURL
+        Ulr = 'https://ncode.syosetu.com/' + "{}/".format(i)
+        baseUlr.append(Ulr)
+        res = urlopen(Ulr)
+        soup = BeautifulSoup(res, "html.parser")
+        num_parts = len(soup.find_all(class_='subtitle'))
+        if num_parts != jsonData[cnt]['num_of_part']:
+            jsonData[cnt]['num_of_part'] = num_parts
+        textFileName = i + '.txt'
 
-            with open(textFileName, "w", encoding="utf-8") as f:
-                for part in range(1, num_parts + 1):
-                    # 作品本文ページのURL
-                    url = Ulr + "{:d}/".format(part)
-                    res = request.urlopen(url)
-                    soup = BeautifulSoup(res, "html.parser")
+        with open(textFileName, "w", encoding="utf-8") as f:
+            for part in range(1, num_parts + 1):
+                # 作品本文ページのURL
+                url = Ulr + "{:d}/".format(part)
+                res = request.urlopen(url)
+                soup = BeautifulSoup(res, "html.parser")
 
-                    # CSSセレクタで本文を指定
-                    honbun = soup.select_one("#novel_honbun").text
+                # CSSセレクタで本文を指定
+                honbun = soup.select_one("#novel_honbun").text
 
-                    # 保存
-                    f.write(honbun)
-                    print("part {:d} downloaded".format(part))  # 進捗を表示
-                    time.sleep(1)  # 次の部分取得までは1秒間の時間を空
-                else:
-                    f.close()
-            emotion_data_list.append(emotion_data(textFileName))
-            time.sleep(1)
+                # 保存
+                f.write(honbun)
+                print("part {:d} downloaded".format(part))  # 進捗を表示
+                time.sleep(1)  # 次の部分取得までは1秒間の時間を空
+            else:
+                f.close()
+        emotion_data_list = emotion_data(textFileName)
+        for dictionary in jsonData:
+            if i == dictionary['ncode']:
+                dictionary['yorokobi'] = emotion_data_list[0]
+                dictionary['ikari'] = emotion_data_list[1]
+                dictionary['kanashimi'] = emotion_data_list[2]
+                dictionary['tanoshimi'] = emotion_data_list[3]
+        time.sleep(1)
+    with open(jsonfile, 'w', encoding="utf-8") as f:
+        json.dump(jsonData, f, indent=4, ensure_ascii=False)
 
 
 if __name__ == '__main__':
-    getBaseUlr('sample.json')
+    getBaseUlr('sample.json')  # ここだけを変更する
