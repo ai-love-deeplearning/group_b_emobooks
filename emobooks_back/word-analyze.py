@@ -1,8 +1,5 @@
 import MeCab
 import json
-import numpy as np
-from matplotlib import pyplot as plt
-import warnings
 
 
 def edit_text(text):
@@ -25,16 +22,28 @@ def set_dictionary(dict_file):
     return emo_dict
 
 
+def vocab_judge_and_list(word):
+    with open('not_vocabrary.json', 'r') as f:
+        data = json.load(f)
+    if word in data.keys():
+        data[word] += 1
+    else:
+        data[word] = 1
+    with open('not_vocabrary.json', 'w') as f:
+        json.dump(data, f, indent=4, ensure_ascii=False)
+
+
 def score_analyze(emo_dict, text_lines):
     i = 1
     count = 0
     score_list = []
-    for line in text_lines:
-        if line in emo_dict.keys():
-            score_list.append(emo_dict[line])
+    for word in text_lines:
+        if word in emo_dict.keys():
+            score_list.append(emo_dict[word])
             count += 1
         else:
-            print(line + 'not in vocabrary')
+            print(word + 'not in vocabrary')
+            vocab_judge_and_list(word)
             i += 1
     print(str(count) + ' word was analyzed. but ' +
           str(i - 1) + ' word is not found in vocabrary.\n')
@@ -74,6 +83,18 @@ def add_array(score_emo, percentage, last):
     return data
 
 
+def create_input_data(data):
+    edited_data = []
+    i = 1
+    while i < 5:
+        text = ""
+        for value in data[i]:
+            text += str(value)
+            text += ','
+        edited_data.append(text.rstrip(','))
+        i += 1
+
+
 def text_edit_main(text):
     text = edit_text(text)
     text_lines = text.split('\n')
@@ -104,18 +125,6 @@ def create_emo_data_main(text):
     for dictionary in emo_dict_list:
         score.append(score_analyze(dictionary, text))
 
-    score_rength = [[0 for i in range(3)] for i in range(4)]
-    score_rength[0][0] = len(score[0])
-    score_rength[1][0] = len(score[1])
-    score_rength[2][0] = len(score[2])
-    score_rength[3][0] = len(score[3])
-
-    j = 0
-    while j < 4:
-        score_rength[j][1] = int(score_rength[j][0] / 99)
-        score_rength[j][2] = score_rength[j][0] - score_rength[j][1] * 99
-        j += 1
-
     analyzed_array = []
     percentage = int(len(score[0]) / 100)
     last = 100 - percentage * 99
@@ -130,10 +139,8 @@ def create_emo_data_main(text):
 
     analyzed_array.append(per_list)
 
-    analyzed_array.append(add_array(score[0], percentage, last))
-    analyzed_array.append(add_array(score[1], percentage, last))
-    analyzed_array.append(add_array(score[2], percentage, last))
-    analyzed_array.append(add_array(score[3], percentage, last))
+    for emo_score in score:
+        analyzed_array.append(add_array(emo_score, percentage, last))
 
     return analyzed_array
 
@@ -144,14 +151,7 @@ def main():
 
     text = text_edit_main(text)
     data = create_emo_data_main(text)
-    print(data)
-
-    plt.plot(data[0], data[1], 'o-', label='happy')
-    plt.plot(data[0], data[2], 'o-', label='angry')
-    plt.plot(data[0], data[3], 'o-', label='sad')
-    plt.plot(data[0], data[4], 'o-', label='fun')
-    plt.legend(loc='best')
-    plt.show()
+    input_data = create_input_data(data)
 
 
 main()
