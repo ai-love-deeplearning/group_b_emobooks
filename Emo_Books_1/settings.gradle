@@ -1,0 +1,2 @@
+include ':app'
+rootProject.name='Emo_Books_1'
