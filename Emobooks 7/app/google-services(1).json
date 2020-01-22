@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "471112270824",
+    "firebase_url": "https://emobooks-a378c.firebaseio.com",
+    "project_id": "emobooks-a378c",
+    "storage_bucket": "emobooks-a378c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471112270824:android:3079d340acf3a7b3c25a5d",
+        "android_client_info": {
+          "package_name": "com.example.tabapplication"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "471112270824-t0ba7hegll04b58lk2lmkmket69c8s20.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-muh61I9IHhBblXciE3AaTEeb6LDHgvE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "471112270824-t0ba7hegll04b58lk2lmkmket69c8s20.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
